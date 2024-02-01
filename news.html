@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News</title>
+  </head>
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+    .newsBox {
+      height: 100vh;
+      width: 100%;
+      background-color: #242424;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .news-body {
+      height: 90vh;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .title {
+      color: white;
+      text-align: center;
+      margin-bottom: 70px;
+      padding: 0px 20px 0px 20px;
+      font-size: 30px;
+      font-weight: 550;
+    }
+    .newsImg {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 60vh;
+      width: 100%;
+      margin-bottom: 80px;
+    }
+    .newsImg img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .description {
+      color: white;
+      text-align: center;
+      padding: 0px 20px 0px 20px;
+      margin-bottom: 70px;
+    }
+  </style>
+  <body>
+    <div class="newsBox">
+      <h1 style="color: white">Latest News</h1>
+      <div class="news-body">
+        <div class="newsImg"></div>
+        <div class="title"></div>
+        <div class="description"></div>
+      </div>
+    </div>
+    <script>
+      const title = document.querySelector(".title");
+      const newsImg = document.querySelector(".newsImg");
+      const description = document.querySelector(".description");
+      const publishedAt = document.querySelector("publishedAt");
+
+      let SCREENO_API = "https://screenoapi.locad.net";
+      let NEWS_API = `${SCREENO_API}/api/getNewsApi`;
+
+      async function getNews() {
+        try {
+          const response = await fetch(NEWS_API);
+          const data = await response.json();
+          console.log(data.data);
+
+          if (data.data.length > 0) {
+            const randomIndex = Math.floor(Math.random() * data.data.length);
+            const randomNews = data.data[randomIndex];
+
+            title.innerHTML = randomNews.title;
+            description.innerHTML = randomNews.description;
+
+            if (randomNews.urlToImage !== null) {
+              const imgElement = document.createElement("img");
+              imgElement.src = randomNews.urlToImage;
+              newsImg.innerHTML = "";
+              newsImg.appendChild(imgElement);
+            } else {
+              location.reload();
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching news::::", error);
+        }
+      }
+
+      getNews();
+    </script>
+  </body>
+</html>
